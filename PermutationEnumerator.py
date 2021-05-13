@@ -1,5 +1,8 @@
 from math import factorial
 
+def multiply_permutations(p1, p2):
+    return [p1[i] for i in p2]
+
 class PermutationEnumerator:
     def __init__(self, perm_length, base=None):
         """

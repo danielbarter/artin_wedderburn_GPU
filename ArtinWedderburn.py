@@ -1,12 +1,13 @@
 import cupy as cp
 import cupyx.scipy.sparse as sparse
-from PermutationEnumerator import PermutationEnumerator
+from math import factorial
+from PermutationEnumerator import *
 
 class Algebra:
     def __init__(
             self,
             dimension, # int
-            left_multiplication_matrices, # cupy sparse matrices
+            multiplication, # cupy sparse matrix
             unit, # cupy dense vector
             star # cupy sparse matrix
     ):
@@ -15,12 +16,9 @@ class Algebra:
         # we denote the basis vectors as e_1, e_2, ...., e_dimension
         self.dimension = dimension
 
-        # list of matrices
-        # jth column of ith matrix is e_i e_j
-        self.left_multiplication_matrices = left_multiplication_matrices
 
-        # useful optimization for implementing multiply
-        self.multiplication_matrix = sparse.hstack(left_multiplication_matrices)
+        # dimension * i + j column is e_i e_j
+        self.multiplication = multiplication
 
         # unit of algebra. Dense cupy array
         self.unit = unit
@@ -29,3 +27,4 @@ class Algebra:
 
 def symmetric_group(n):
     pe = PermutationEnumerator(n)
+    dimension = ps.number_of_perms
