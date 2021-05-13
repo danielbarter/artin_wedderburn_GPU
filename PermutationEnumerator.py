@@ -5,6 +5,7 @@ class PermutationEnumerator:
         """
         class for enumerating permutations.
         see https://gist.github.com/lukmdo/7049748
+        https://en.wikipedia.org/wiki/Factorial_number_system
         compatible with itertools.permutations
         """
         self.perm_length = perm_length
@@ -37,7 +38,6 @@ class PermutationEnumerator:
 
     def perm_from_code(self, code):
         """
-        base: List[int]
         code: List[int]
         return: List[int]
         """
@@ -51,7 +51,6 @@ class PermutationEnumerator:
 
     def code_from_perm(self, perm):
         """
-        base: List[int]
         perm: List[int]
         rtype: List[int]
         """
