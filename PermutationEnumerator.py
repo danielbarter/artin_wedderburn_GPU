@@ -59,7 +59,7 @@ class PermutationEnumerator:
         rtype: List[int]
         """
         p = self.base.copy()
-        n = len(perm)
+        n = self.perm_length
         pos_map = {v: i for i, v in enumerate(p)}
 
         w = []
