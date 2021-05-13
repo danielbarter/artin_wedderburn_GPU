@@ -1,7 +1,5 @@
 from ArtinWedderburn import *
 from itertools import permutations
-from math import factorial
-
 
 class bcolors:
     HEADER = '\033[95m'
@@ -16,17 +14,19 @@ class bcolors:
 
 
 def int_to_perm_to_int():
-    for i in range(factorial(4)):
-        if int_from_perm(perm_from_int(4, i)) != i:
+    pe = PermutationEnumerator(4)
+    for i in range(pe.number_of_perms):
+        if pe.int_from_perm(pe.perm_from_int(i)) != i:
             print(bcolors.FAIL + "failed: int_to_perm_to_int" + bcolors.ENDC)
             return
 
     print(bcolors.OKGREEN + "passed: int_to_perm_to_int" + bcolors.ENDC)
 
 def perm_to_int_to_perm():
-    for p in permutations(list(range(4))):
+    pe = PermutationEnumerator(4)
+    for p in permutations(list(range(pe.perm_length))):
         pl = list(p)
-        if perm_from_int(4,int_from_perm(pl)) != pl:
+        if pe.perm_from_int(pe.int_from_perm(pl)) != pl:
             print(bcolors.FAIL + "failed: perm_to_int_to_perm" + bcolors.ENDC)
             return
 

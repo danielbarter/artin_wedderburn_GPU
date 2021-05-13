@@ -1,71 +1,82 @@
-def int_from_code(code):
-    """
-    https://gist.github.com/lukmdo/7049748
-    code: List[int]
-    return: int
-    """
-    num = 0
-    for i, v in enumerate(reversed(code), 1):
-        num *= i
-        num += v
+from math import factorial
 
-    return num
+class PermutationEnumerator:
+    def __init__(self, perm_length):
+        """
+        class for enumerating permutations.
+        see https://gist.github.com/lukmdo/7049748
+        compatible with itertools.permutations
+        """
+        self.perm_length = perm_length
+        self.number_of_perms = factorial(perm_length)
 
-def code_from_int(size, num):
-    """
-    https://gist.github.com/lukmdo/7049748
-    size: int
-    num: int
-    return: List[int]
-    """
-    code = []
-    for i in range(size):
-        num, j = divmod(num, size - i)
-        code.append(j)
+    @staticmethod
+    def int_from_code(code):
+        """
+        code: List[int]
+        return: int
+        """
+        num = 0
+        for i, v in enumerate(reversed(code), 1):
+            num *= i
+            num += v
 
-    return code
+        return num
 
-def perm_from_code(code):
-    """
-    https://gist.github.com/lukmdo/7049748
-    base: List[int]
-    code: List[int]
-    return: List[int]
-    """
+    def code_from_int(self, num):
+        """
+        num: int
+        return: List[int]
+        """
+        code = []
+        for i in range(self.perm_length):
+            num, j = divmod(num, self.perm_length - i)
+            code.append(j)
 
-    perm = list(range(len(code)))
-    for i in range(len(code) - 1):
-        j = code[i]
-        perm[i], perm[i+j] = perm[i+j], perm[i]
+        return code
 
-    return perm
+    @staticmethod
+    def perm_from_code(code):
+        """
+        base: List[int]
+        code: List[int]
+        return: List[int]
+        """
 
-def code_from_perm(perm):
-    """
-    https://gist.github.com/lukmdo/7049748
-    base: List[int]
-    perm: List[int]
-    rtype: List[int]
-    """
-    p = list(range(len(perm)))
-    n = len(perm)
-    pos_map = {v: i for i, v in enumerate(p)}
+        perm = list(range(len(code)))
+        for i in range(len(code) - 1):
+            j = code[i]
+            perm[i], perm[i+j] = perm[i+j], perm[i]
 
-    w = []
-    for i in range(n):
-        d = pos_map[perm[i]] - i
-        w.append(d)
+        return perm
 
-        if not d:
-            continue
-        t = pos_map[perm[i]]
-        pos_map[p[i]], pos_map[p[t]] = pos_map[p[t]], pos_map[p[i]]
-        p[i], p[t] = p[t], p[i]
+    @staticmethod
+    def code_from_perm(perm):
+        """
+        base: List[int]
+        perm: List[int]
+        rtype: List[int]
+        """
+        p = list(range(len(perm)))
+        n = len(perm)
+        pos_map = {v: i for i, v in enumerate(p)}
 
-    return w
+        w = []
+        for i in range(n):
+            d = pos_map[perm[i]] - i
+            w.append(d)
 
-def perm_from_int(size, num):
-    return perm_from_code(code_from_int(size, num))
+            if not d:
+                continue
+            t = pos_map[perm[i]]
+            pos_map[p[i]], pos_map[p[t]] = pos_map[p[t]], pos_map[p[i]]
+            p[i], p[t] = p[t], p[i]
 
-def int_from_perm(perm):
-    return int_from_code(code_from_perm(perm))
+        return w
+
+
+    def perm_from_int(self, num):
+        return self.perm_from_code(self.code_from_int(num))
+
+    def int_from_perm(self,perm):
+        return self.int_from_code(self.code_from_perm(perm))
