@@ -1,7 +1,7 @@
 from math import factorial
 
 class PermutationEnumerator:
-    def __init__(self, perm_length):
+    def __init__(self, perm_length, base=None):
         """
         class for enumerating permutations.
         see https://gist.github.com/lukmdo/7049748
@@ -10,7 +10,10 @@ class PermutationEnumerator:
         """
         self.perm_length = perm_length
         self.number_of_perms = factorial(perm_length)
-        self.base = list(range(self.perm_length))
+        if base is not None:
+            self.base = base
+        else:
+            self.base = list(range(perm_length))
 
     @staticmethod
     def int_from_code(code):
