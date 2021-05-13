@@ -10,6 +10,7 @@ class PermutationEnumerator:
         """
         self.perm_length = perm_length
         self.number_of_perms = factorial(perm_length)
+        self.base = list(range(self.perm_length))
 
     @staticmethod
     def int_from_code(code):
@@ -42,7 +43,7 @@ class PermutationEnumerator:
         return: List[int]
         """
 
-        perm = list(range(self.perm_length))
+        perm = self.base.copy()
         for i in range(self.perm_length - 1):
             j = code[i]
             perm[i], perm[i+j] = perm[i+j], perm[i]
@@ -54,7 +55,7 @@ class PermutationEnumerator:
         perm: List[int]
         rtype: List[int]
         """
-        p = list(range(self.perm_length))
+        p = self.base.copy()
         n = len(perm)
         pos_map = {v: i for i, v in enumerate(p)}
 
