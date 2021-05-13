@@ -25,7 +25,7 @@ def code_from_int(size, num):
 
     return code
 
-def perm_from_code(base, code):
+def perm_from_code(code):
     """
     https://gist.github.com/lukmdo/7049748
     base: List[int]
@@ -33,23 +33,23 @@ def perm_from_code(base, code):
     return: List[int]
     """
 
-    perm = base.copy()
-    for i in range(len(base) - 1):
+    perm = list(range(len(code)))
+    for i in range(len(code) - 1):
         j = code[i]
         perm[i], perm[i+j] = perm[i+j], perm[i]
 
     return perm
 
-def code_from_perm(base, perm):
+def code_from_perm(perm):
     """
     https://gist.github.com/lukmdo/7049748
     base: List[int]
     perm: List[int]
     rtype: List[int]
     """
-    p = base.copy()
-    n = len(base)
-    pos_map = {v: i for i, v in enumerate(base)}
+    p = list(range(len(perm)))
+    n = len(perm)
+    pos_map = {v: i for i, v in enumerate(p)}
 
     w = []
     for i in range(n):
@@ -63,3 +63,9 @@ def code_from_perm(base, perm):
         p[i], p[t] = p[t], p[i]
 
     return w
+
+def perm_from_int(size, num):
+    return perm_from_code(code_from_int(size, num))
+
+def int_from_perm(perm):
+    return int_from_code(code_from_perm(perm))
