@@ -1,4 +1,4 @@
-from ArtinWedderburn import *
+from PermutationEnumerator import *
 from itertools import permutations
 
 class bcolors:
