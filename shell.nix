@@ -1,9 +1,13 @@
 with (import <nixpkgs> {});
 
-mkShell {
+let pythonEnv = python38.withPackages (
+      ps: [ ps.cupy
+          ]);
 
-  buildInputs = [ cudatoolkit
-                  nvtop
+in mkShell {
+
+  buildInputs = [ nvtop
+                  pythonEnv
                 ];
 
   # nvtop can't find shared libraries. Should be fixed in nvtop
