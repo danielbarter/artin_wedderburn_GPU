@@ -4,16 +4,33 @@ from cupy.linalg import eigh
 from math import factorial
 from PermutationEnumerator import *
 
+def fuzzy_filter(array, threshold):
+    result = []
+    for x in array:
+        already_seen = False
+        for v in result:
+            if abs(x-v) < threshold:
+                already_seen = True
+                break
+
+        if not already_seen:
+            result.append(x)
+
+    return result
+
 
 
 class ArtinWedderburn:
     def eigenvalues_of_pivot(self):
         left_multiplication = self.algebra.left_multiplication_matrix(
             self.pivot)
-        return eigh(left_multiplication)[0]
+        all_eigenvalues = eigh(left_multiplication)[0].tolist()
+        return fuzzy_filter(all_eigenvalues, self.threshold)
 
 
-    def __init__(self, algebra):
+    def __init__(self, algebra, threshold = 1.0e-5, logging = False):
+        self.logging = logging
+        self.threshold = threshold
         self.algebra = algebra
         self.pivot = algebra.random_positive_vector()
 
