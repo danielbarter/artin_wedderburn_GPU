@@ -28,21 +28,41 @@ class ArtinWedderburn:
         return fuzzy_filter(all_eigenvalues, self.threshold)
 
     def compute_indecomposable_idempotents(self):
-        eigenvalues = eigenvalues_of_pivot()
+        eigenvalues = self.eigenvalues_of_pivot()
         number_of_eigenvalues = len(eigenvalues)
+
+        indecomposable_idempotents = []
         for i in range(number_of_eigenvalues):
             accumulator = self.algebra.unit
             for j in range(number_of_eigenvalues):
-                pass
 
+                if j != i:
+                    accumulator = self.algebra.multiply(
+                        accumulator,
+                        self.pivot - eigenvalues[j] * self.algebra.unit)
+
+            # scaling the idempotents
+            accumulator_squared = self.algebra.multiply(accumulator,accumulator)
+            key_index = cp.abs(accumulator).argmax()
+            scale_factor = accumulator_squared[key_index] / accumulator[key_index]
+            accumulator = accumulator / scale_factor
+            indecomposable_idempotents.append(accumulator)
+
+        return indecomposable_idempotents
+
+    def log(self,*args, **kwargs):
+        if self.logging:
+            print(*args, **kwargs)
 
     def __init__(self, algebra, threshold = 1.0e-5, logging = False):
         self.algebra = algebra
         self.threshold = threshold
         self.logging = logging
 
-
         self.pivot = algebra.random_positive_vector()
+
+        self.log("computing indecomposable idempotents")
+        self.indecomposable_idempotents = self.compute_indecomposable_idempotents()
 
 
 class Algebra:
