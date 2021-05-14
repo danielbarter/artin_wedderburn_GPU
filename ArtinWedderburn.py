@@ -1,8 +1,21 @@
 import cupy as cp
 import cupyx.scipy.sparse as sparse
-from cupyx.scipy.sparse.linalg import aslinearoperator
+from cupy.linalg import eigh
 from math import factorial
 from PermutationEnumerator import *
+
+
+
+class ArtinWedderburn:
+    def compute_eigenvalues(self):
+        left_multiplication = self.algebra.left_multiplication_matrix(
+            self.pivot)
+        return eigh(left_multiplication)[0]
+
+    def __init__(self, algebra):
+        self.algebra = algebra
+        self.pivot = algebra.random_positive_vector()
+
 
 class Algebra:
     def associative_defect(self):
@@ -28,6 +41,12 @@ class Algebra:
     def random_vector(self):
         d = self.dimension
         return (cp.random.rand(d) - 0.5 ) + 1j * (cp.random.rand(d) - 0.5 )
+
+    def random_positive_vector(self):
+        v = self.random_vector()
+        return self.multiply(
+            v,
+            self.star(v))
 
     def multiply(self, x, y):
         return self.multiplication * cp.kron(x,y)
@@ -77,9 +96,6 @@ class Algebra:
         # jth column is e_j*
         # sparse cupy matrix
         self.star_mat = star
-
-
-
 
 
 
