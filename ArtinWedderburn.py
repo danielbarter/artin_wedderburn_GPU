@@ -7,6 +7,11 @@ from PermutationEnumerator import *
 
 
 class ArtinWedderburn:
+    def eigenvalues_of_pivot(self):
+        left_multiplication = self.algebra.left_multiplication_matrix(
+            self.pivot)
+        return eigh(left_multiplication)[0]
+
 
     def __init__(self, algebra):
         self.algebra = algebra
@@ -31,10 +36,6 @@ class Algebra:
                     self.associative_defect(),
                     self.associative_defect(),
                     self.left_identity_defect()])
-
-    def compute_eigenvalues(v):
-        left_multiplication = self.left_multiplication_matrix(v)
-        return eigh(left_multiplication)[0]
 
 
     def random_vector(self):
