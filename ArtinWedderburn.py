@@ -33,7 +33,7 @@ class Algebra:
         return self.multiplication * cp.kron(x,y)
 
     def star(self, x):
-        return self.star_mat * x
+        return self.star_mat * (x.conj())
 
 
     def mult_helper(self,v, ms):
