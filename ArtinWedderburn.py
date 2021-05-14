@@ -33,7 +33,7 @@ class Algebra:
         return self.multiplication * cp.kron(x,y)
 
     def star(self, x):
-        return aslinearoperator(self.star_matrix)(x)
+        return self.star_mat * x
 
 
     def mult_helper(self,v, ms):
@@ -56,7 +56,7 @@ class Algebra:
             dimension, # int
             left_multiplication_matrices, # list of cupy sparse matrices
             unit, # cupy dense vector
-            star_matrix # cupy sparse matrix
+            star # cupy sparse matrix
     ):
 
         # dimension of algebra
@@ -76,7 +76,7 @@ class Algebra:
 
         # jth column is e_j*
         # sparse cupy matrix
-        self.star_matrix = star_matrix
+        self.star_mat = star
 
 
 
@@ -126,7 +126,7 @@ def symmetric_group(n):
         col_star[j] = j
         row_star[j] = i
 
-    star_matrix = sparse.coo_matrix(
+    star = sparse.coo_matrix(
         (data_star, (row_star, col_star)),
         shape = (dimension, dimension),
         dtype=complex)
@@ -135,7 +135,7 @@ def symmetric_group(n):
         dimension,
         left_multiplication_matrices,
         unit,
-        star_matrix)
+        star)
 
 
 
