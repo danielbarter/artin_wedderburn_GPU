@@ -27,11 +27,21 @@ class ArtinWedderburn:
         all_eigenvalues = eigh(left_multiplication)[0].tolist()
         return fuzzy_filter(all_eigenvalues, self.threshold)
 
+    def compute_indecomposable_idempotents(self):
+        eigenvalues = eigenvalues_of_pivot()
+        number_of_eigenvalues = len(eigenvalues)
+        for i in range(number_of_eigenvalues):
+            accumulator = self.algebra.unit
+            for j in range(number_of_eigenvalues):
+                pass
+
 
     def __init__(self, algebra, threshold = 1.0e-5, logging = False):
-        self.logging = logging
-        self.threshold = threshold
         self.algebra = algebra
+        self.threshold = threshold
+        self.logging = logging
+
+
         self.pivot = algebra.random_positive_vector()
 
 
