@@ -35,11 +35,14 @@ def perm_to_int_to_perm():
 
 
 def total_defect_test(algebra, name, defect_threshold=1.0e-5):
-    aw = ArtinWedderburn(algebra)
+    print("\n\n")
+    aw = ArtinWedderburn(algebra, logging=True)
     if aw.total_defect < defect_threshold:
         print(bcolors.OKGREEN, "passed: total_defect_test", name, bcolors.ENDC)
     else:
         print(bcolors.FAIL, "failed: total_defect_test", name, bcolors.ENDC)
+
+    print("\n\n")
 
 
 int_to_perm_to_int()
