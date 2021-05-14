@@ -18,7 +18,24 @@ def fuzzy_filter(array, threshold):
 
     return result
 
+def format_error(x):
+    return str.format('{0:1.0e}' ,x)
 
+def group_by(xs, equivalence_relation):
+    groups = []
+
+    for x in xs:
+        group_found = False
+        for group in groups:
+            if equivalence_relation(x, group[0]):
+                group.append(x)
+                group_found = True
+                break
+
+        if not group_found:
+            groups.append([x])
+
+    return groups
 
 class ArtinWedderburn:
     def eigenvalues_of_pivot(self):
@@ -28,6 +45,7 @@ class ArtinWedderburn:
         return fuzzy_filter(all_eigenvalues, self.threshold)
 
     def compute_indecomposable_idempotents(self):
+        self.log("computing indecomposable idempotents")
         eigenvalues = self.eigenvalues_of_pivot()
         number_of_eigenvalues = len(eigenvalues)
 
@@ -48,7 +66,40 @@ class ArtinWedderburn:
             accumulator = accumulator / scale_factor
             indecomposable_idempotents.append(accumulator)
 
+        idempotent_defect = 0
+        for i in range(number_of_eigenvalues):
+            for j in range(i, number_of_eigenvalues):
+                id1 = indecomposable_idempotents[i]
+                id2 = indecomposable_idempotents[j]
+                if i == j:
+                    e = self.algebra.multiply(id1, id1) - id1
+                else:
+                    e = self.algebra.multiply(
+                        indecomposable_idempotents[i],
+                        indecomposable_idempotents[j])
+
+                idempotent_defect += cp.abs(e).sum().tolist()
+
+
+        self.total_defect += idempotent_defect
+        self.log("indecomposable idempotent defect: " + format_error(idempotent_defect))
+        self.log("")
         return indecomposable_idempotents
+
+    def group_indecomposable_idempotents(self, indecomposable_idempotents):
+        test_vector = self.algebra.random_vector()
+
+        def same_block(v, w):
+            e = self.algebra.multiply(v, test_vector)
+            e = self.algebra.multiply(e, w)
+            if cp.abs(e).sum().tolist() > self.threshold:
+                return True
+            else:
+                return False
+
+        return group_by(indecomposable_idempotents, same_block)
+
+
 
     def log(self,*args, **kwargs):
         if self.logging:
@@ -58,11 +109,26 @@ class ArtinWedderburn:
         self.algebra = algebra
         self.threshold = threshold
         self.logging = logging
+        self.total_defect = algebra.algebra_defect()
+
+        self.log("algebra defect:", format_error(self.total_defect))
+        self.log("")
 
         self.pivot = algebra.random_positive_vector()
 
-        self.log("computing indecomposable idempotents")
-        self.indecomposable_idempotents = self.compute_indecomposable_idempotents()
+        self.indecomposable_idempotents = self.group_indecomposable_idempotents(
+            self.compute_indecomposable_idempotents()
+        )
+
+        self.log("total defect:", format_error(self.total_defect))
+        self.log("")
+
+        self.log(
+            len(self.indecomposable_idempotents),
+            "representations found with dimensions")
+
+        for i, l in enumerate(self.indecomposable_idempotents):
+            self.log(i, ":", len(l))
 
 
 class Algebra:
