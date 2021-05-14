@@ -33,8 +33,7 @@ class Algebra:
                     self.left_identity_defect()])
 
     def compute_eigenvalues(v):
-        left_multiplication = self.left_multiplication_matrix(
-            v)
+        left_multiplication = self.left_multiplication_matrix(v)
         return eigh(left_multiplication)[0]
 
 
