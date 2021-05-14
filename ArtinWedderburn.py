@@ -1,6 +1,6 @@
 import cupy as cp
 import cupyx.scipy.sparse as sparse
-import cupyx.scipy.sparse.linalg as linalg
+from cupyx.scipy.sparse.linalg import aslinearoperator
 from math import factorial
 from PermutationEnumerator import *
 
@@ -33,7 +33,7 @@ class Algebra:
         return self.multiplication * cp.kron(x,y)
 
     def star(self, x):
-        return linalg.aslinearoperator(self.star_matrix)(x)
+        return aslinearoperator(self.star_matrix)(x)
 
 
     def mult_helper(self,v, ms):
