@@ -16,7 +16,8 @@ let
   }; in python38.override {inherit packageOverrides;};
 
   pythonEnv = python.withPackages (
-      ps: [ ps.cupy
+    ps: [ ps.cupy
+          ps.numpy
           ]);
 
 in mkShell {

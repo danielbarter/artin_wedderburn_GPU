@@ -1,4 +1,5 @@
 import cupy as cp
+import numpy as np
 import cupyx.scipy.sparse as sparse
 from cupy.linalg import eigh
 from math import factorial
@@ -171,7 +172,7 @@ class Algebra:
     def mult_helper(self,v, ms):
         # ms is a list of sparse matrices
         d = self.dimension
-        accumulator = cp.zeros((d,d), dtype=complex)
+        accumulator = cp.zeros((d,d), dtype=np.complex128)
 
         for (c, m) in zip(v, ms):
             accumulator += c * m.todense()
@@ -219,9 +220,9 @@ def symmetric_group(n):
 
     for i in range(dimension):
 
-        data_mult = cp.ndarray((dimension), dtype=complex)
-        col_mult = cp.ndarray((dimension), dtype=int)
-        row_mult = cp.ndarray((dimension), dtype=int)
+        data_mult = cp.ndarray((dimension), dtype=np.complex128)
+        col_mult = cp.ndarray((dimension), dtype=np.int64)
+        row_mult = cp.ndarray((dimension), dtype=np.int64)
 
         for j in range(dimension):
             p1 = pe.perm_from_int(i)
@@ -236,16 +237,16 @@ def symmetric_group(n):
         left_multiplication = sparse.coo_matrix(
             (data_mult, (row_mult, col_mult)),
             shape=(dimension, dimension),
-            dtype=complex)
+            dtype=np.complex128)
 
         left_multiplication_matrices.append(left_multiplication)
 
-    unit = cp.ndarray((dimension), dtype=complex)
+    unit = cp.ndarray((dimension), dtype=np.complex128)
     unit[pe.int_from_perm(pe.base)] = 1.0
 
-    data_star = cp.ndarray((dimension), dtype=complex)
-    col_star = cp.ndarray((dimension), dtype=int)
-    row_star = cp.ndarray((dimension), dtype=int)
+    data_star = cp.ndarray((dimension), dtype=np.complex128)
+    col_star = cp.ndarray((dimension), dtype=np.int64)
+    row_star = cp.ndarray((dimension), dtype=np.int64)
 
     for j in range(dimension):
         p = pe.perm_from_int(j)
@@ -258,7 +259,7 @@ def symmetric_group(n):
     star = sparse.coo_matrix(
         (data_star, (row_star, col_star)),
         shape = (dimension, dimension),
-        dtype=complex)
+        dtype=np.complex128)
 
     return Algebra(
         dimension,
