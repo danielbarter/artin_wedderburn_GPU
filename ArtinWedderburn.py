@@ -2,7 +2,7 @@ import cupy as cp
 import numpy as np
 import cupyx.scipy.sparse as sparse
 from cupy.linalg import eigh
-from math import factorial
+from math import factorial, sqrt
 from PermutationEnumerator import *
 
 def fuzzy_filter(array, threshold):
@@ -48,6 +48,7 @@ class ArtinWedderburn:
     def compute_indecomposable_idempotents(self):
         self.log("computing indecomposable idempotents")
         eigenvalues = self.eigenvalues_of_pivot()
+        print(eigenvalues)
         number_of_eigenvalues = len(eigenvalues)
 
         indecomposable_idempotents = []
@@ -60,10 +61,13 @@ class ArtinWedderburn:
                         accumulator,
                         self.pivot - eigenvalues[j] * self.algebra.unit)
 
+            # initial scaling to avoid floating point error
+            accumulator = accumulator / cp.abs(accumulator).sum()
+
             # scaling the idempotents
             accumulator_squared = self.algebra.multiply(accumulator,accumulator)
-            key_index = cp.abs(accumulator).argmax()
-            scale_factor = accumulator_squared[key_index] / accumulator[key_index]
+            scale_factors = accumulator_squared / accumulator
+            scale_factor = cp.average(scale_factors)
             accumulator = accumulator / scale_factor
             indecomposable_idempotents.append(accumulator)
 
@@ -78,7 +82,7 @@ class ArtinWedderburn:
                     e = self.algebra.multiply(
                         indecomposable_idempotents[i],
                         indecomposable_idempotents[j])
-
+                print(i,j,cp.abs(e).sum())
                 idempotent_defect += cp.abs(e).sum().tolist()
 
 
@@ -158,9 +162,9 @@ class Algebra:
 
     def random_positive_vector(self):
         v = self.random_vector()
-        return self.multiply(
+        return - (self.unit) +  ( self.multiply(
             v,
-            self.star(v))
+            self.star(v)) / sqrt(self.dimension) )
 
     def multiply(self, x, y):
         return self.multiplication * cp.kron(x,y)
